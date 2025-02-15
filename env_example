@@ -1,5 +1,5 @@
 # Firebase
-FIREBASE_CREDENTIALS_PATH=recruiters-marketplace-firebase-adminsdk-fbsvc-3c2779552e.json
+FIREBASE_CREDENTIALS_PATH=
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your_google_client_id
@@ -7,8 +7,8 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
 
 # LinkedIn OAuth
-LINKEDIN_CLIENT_ID="77bnyige0ssvxo"
-LINKEDIN_CLIENT_SECRET="WPL_AP1.JMaoOwHOG8Hv3n9L.SWa5bg=="
+LINKEDIN_CLIENT_ID=
+LINKEDIN_CLIENT_SECRET=
 LINKEDIN_REDIRECT_URI=http://localhost:8000/auth/linkedin/callback
 
 # Email Configuration
@@ -19,5 +19,5 @@ SMTP_PASSWORD=your_app_password
 SMTP_FROM_EMAIL=your_email@gmail.com
 
 # JWT Settings
-JWT_SECRET_KEY=bF-awxo2L5nTsFgLwMf64PssuRLDaKMmeFGjRkzDZ5U
+JWT_SECRET_KEY=
 JWT_ALGORITHM="HS256"
