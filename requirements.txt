@@ -1,0 +1,9 @@
+fastapi 
+firebase-admin 
+google-auth 
+requests 
+pydantic-settings 
+python-dotenv 
+uvicorn 
+python-multipart 
+email-validator
