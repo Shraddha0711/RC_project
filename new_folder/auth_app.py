@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
 import requests
 import firebase_admin
@@ -8,6 +8,7 @@ import os
 import uvicorn
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import timezone
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -118,7 +119,7 @@ def create_user_profile(profile: UserProfile, token: str):
         uid = decoded_token["uid"]
 
         # Reference Firestore document
-        user_ref = db.collection("users").document(uid)
+        user_ref = db.collection("recruiters").document(uid)
 
         # Data to be stored (including static and derived fields)
         user_data = {
@@ -150,11 +151,48 @@ def create_user_profile(profile: UserProfile, token: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@app.post("/logout")
+def logout(token: str):
+    try:
+        # Verify the ID token and get the user UID
+        decoded_token = auth.verify_id_token(token)
+        uid = decoded_token["uid"]
+
+        # Revoke all refresh tokens for the user
+        auth.revoke_refresh_tokens(uid)
+
+        return {"message": "User logged out successfully."}
+
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/verify-token")
+def verify_token(token: str = Header(None)):
+    try:
+        # Decode and verify the Firebase ID token (disable IAM check)
+        decoded_token = auth.verify_id_token(token, check_revoked=True)
+        uid = decoded_token["uid"]
+
+        return {
+            "message": "Token is valid.",
+            "user_id": uid,
+            "email": decoded_token.get("email"),
+            "expires_at": datetime.utcfromtimestamp(decoded_token["exp"]).strftime("%Y-%m-%d %H:%M:%S UTC")
+        }
+
+    except auth.ExpiredIdTokenError:
+        raise HTTPException(status_code=401, detail="Token has expired. Please log in again.")
+    except auth.RevokedIdTokenError:
+        raise HTTPException(status_code=401, detail="Token has been revoked.")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+
 
 @app.get("/users")
 def get_all_users():
     try:
-        users_ref = db.collection("users").stream()
+        users_ref = db.collection("recruiters").stream()
         users = []
 
         for user in users_ref:
@@ -170,5 +208,3 @@ def get_all_users():
 # Entry point to run the FastAPI app
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
