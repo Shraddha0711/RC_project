@@ -237,6 +237,7 @@ async def update_candidate(candidate_id: str, candidate: Candidate):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+
 # Endpoint to delete a candidate
 @app.delete("/candidates/{candidate_id}/")
 async def delete_candidate(candidate_id: str):
