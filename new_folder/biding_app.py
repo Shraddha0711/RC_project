@@ -7,7 +7,7 @@ from typing import List, Optional, Dict, Any
 import os
 from dotenv import load_dotenv
 load_dotenv()
-# Initialize Firebase
+
 cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS_PATH"))
 initialize_app(cred)
 db = firestore.client()
